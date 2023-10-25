@@ -2,16 +2,19 @@ import { createStore } from "vuex";
 
 const store = createStore({
   state: {
-    players: [],
+    gameData: {
+      players: [],
+      limitTime: 10,
+    },
   },
   mutations: {
-    setPlayers(state, players) {
-      state.players = players;
+    updateGameData(state, payload) {
+      state.gameData = payload;
     },
   },
   actions: {
-    addPlayers({ commit }, players) {
-      commit("setPlayers", players);
+    updateGameData({ commit }, payload) {
+      commit("updateGameData", payload);
     },
   },
   getters: {},

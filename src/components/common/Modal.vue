@@ -2,10 +2,6 @@
   <div class="modal" v-if="showModal">
     <div class="modal-content">
       <slot></slot>
-      <div class="flex items-center justify-center gap-4">
-        <Button variant="secondary" @click="cancel">GO BACK</Button>
-        <Button variant="primary" @click="confirm">LET'S GO !!!</Button>
-      </div>
     </div>
   </div>
 </template>

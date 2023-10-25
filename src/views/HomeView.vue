@@ -1,5 +1,5 @@
 <script>
-import AddPlayer from '../components/AddPlayer.vue';
+import AddPlayer from '@/components/AddPlayer.vue';
 
 export default {
   components: {

@@ -23,6 +23,9 @@
     </div>
 
     <div class="mb-10">
+      <h1 class="text-sm text-center mb-4" v-if="isNoPlayerError">
+        Add at least 1 player !
+      </h1>
       <div
         class="flex items-center gap-4 mb-4"
         v-for="(player, index) in players"
@@ -32,6 +35,7 @@
           class="block w-full p-2 border-radius rounded outline-none bg-gray-200 focus:bg-white transition"
           v-model="players[index]"
           :placeholder="`Player ${index + 1} name...`"
+          ref="textInputs"
         />
         <Button @click="deletePlayer(index)" variant="secondary">-</Button>
       </div>
@@ -61,7 +65,13 @@
       </select>
     </div>
 
-    <Button variant="primary" :style="{ backgroundColor: currentColor }" class="mx-auto" @click="openConfirmationModal">START</Button>
+    <Button
+      variant="primary"
+      :style="{ backgroundColor: currentColor }"
+      class="mx-auto"
+      @click="openConfirmationModal"
+      >START</Button
+    >
     <Modal v-if="showConfirmationModal" @close="showConfirmationModal = false">
       <div>
         <h1>Total players: {{ players.length }}</h1>
@@ -71,13 +81,23 @@
         </div>
 
         <h1 class="my-6">Are you guys ready ?</h1>
+
+        <div class="flex items-center justify-center gap-4">
+          <Button variant="secondary" @click="closeConfirmationModal"
+            >Cancel</Button
+          >
+          <Button variant="primary" @click="updateStoreAndCloseModal"
+            >LET'S GO !!!</Button
+          >
+        </div>
       </div>
     </Modal>
   </div>
 </template>
 <script>
-import Button from "./common/Button.vue";
-import Modal from "./common/Modal.vue";
+import Button from "@/components/common/Button.vue";
+import Modal from "@/components/common/Modal.vue";
+import router from "@/router";
 
 export default {
   components: { Button, Modal },
@@ -89,6 +109,7 @@ export default {
       currentIndex: 0,
       currentColor: "#FF5733",
       showConfirmationModal: false,
+      isNoPlayerError: false,
     };
   },
   created() {
@@ -101,14 +122,43 @@ export default {
     },
     addMorePlayer() {
       if (this.players.length < 5) {
-        this.players.push("");
+        this.players = [...this.players, ""];
       }
     },
     deletePlayer(index) {
       this.players.splice(index, 1);
+      this.players = [...this.players];
     },
     openConfirmationModal() {
-      this.showConfirmationModal = true;
+      if (!this.isNoPlayerError) {
+        this.showConfirmationModal = true;
+      }
+    },
+    closeConfirmationModal() {
+      this.showConfirmationModal = false;
+    },
+    updateStoreAndCloseModal() {
+      if (!this.isNoPlayerError) {
+        const payload = {
+          players: this.players,
+          limitTime: this.limitTime,
+        };
+        this.$store.dispatch("updateGameData", payload);
+        this.closeConfirmationModal();
+        router.push("/start-game");
+      }
+    },
+  },
+  watch: {
+    players: {
+      handler(newPlayers) {
+        if (newPlayers.length === 0) {
+          this.isNoPlayerError = true;
+        } else {
+          this.isNoPlayerError = false;
+        }
+      },
+      immediate: true,
     },
   },
 };

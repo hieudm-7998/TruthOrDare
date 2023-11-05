@@ -137,15 +137,15 @@ export default {
     closeConfirmationModal() {
       this.showConfirmationModal = false;
     },
-    updateStoreAndCloseModal() {
+    async updateStoreAndCloseModal() {
       if (!this.isNoPlayerError) {
-        const payload = {
-          players: this.players,
-          limitTime: this.limitTime,
-        };
-        this.$store.dispatch("updateGameData", payload);
+        await this.$store.dispatch("updateGamePlayers", this.players);
+        await this.$store.dispatch("updateGameLimitTime", this.limitTime);
         this.closeConfirmationModal();
-        router.push("/start-game");
+        router.push({
+          name: "loading-screen",
+          query: { target: "start-game" },
+        });
       }
     },
   },

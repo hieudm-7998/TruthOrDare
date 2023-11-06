@@ -8,22 +8,27 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
+      meta: { title: `Truth or Dare | Home` },
       component: HomeView,
     },
     {
       path: "/start-game",
       name: "start-game",
+      meta: { title: `Truth or Dare | Start Game` },
       component: () => import("@/views/StartGame.vue"),
     },
     {
       path: "/loading-screen",
       name: "loading-screen",
+      meta: { title: `Truth or Dare | Loading...` },
       component: LoadingScreen,
-      props: {
-        default: true,
-      },
     },
   ],
+});
+
+router.beforeEach((to, from, next) => {
+  document.title = to.meta.title;
+  next();
 });
 
 export default router;

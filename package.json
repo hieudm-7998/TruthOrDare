@@ -1,6 +1,8 @@
 {
-  "name": "truth-or-dare-app",
-  "version": "0.0.0",
+  "name": "truth-or-dare",
+  "version": "1.0",
+  "author": "@virgoccasionally",
+  "description": "I made this just because there are so many bullshit apps that we have to pay to use. Feel free to play up to 5 players, select the timer and let's start. Happy drinking !",
   "private": true,
   "scripts": {
     "dev": "vite",

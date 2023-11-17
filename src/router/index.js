@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import LoadingScreen from "@/views/LoadingScreen.vue";
+import StartGame from "@/views/StartGame.vue";
+import EndGame from "@/views/EndGame.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,7 +17,13 @@ const router = createRouter({
       path: "/start-game",
       name: "start-game",
       meta: { title: `Truth or Dare | Start Game` },
-      component: () => import("@/views/StartGame.vue"),
+      component: StartGame,
+    },
+    {
+      path: "/end-game",
+      name: "end-game",
+      meta: { title: `Truth or Dare | End Game` },
+      component: EndGame,
     },
     {
       path: "/loading-screen",

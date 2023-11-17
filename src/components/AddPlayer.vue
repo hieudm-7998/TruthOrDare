@@ -87,7 +87,7 @@
             >Cancel</Button
           >
           <Button variant="primary" @click="updateStoreAndCloseModal"
-            >LET'S GO !!!</Button
+            >START!</Button
           >
         </div>
       </div>

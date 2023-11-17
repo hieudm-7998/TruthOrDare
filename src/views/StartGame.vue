@@ -41,7 +41,7 @@
       class="flex items-center justify-center mt-5 gap-4"
     >
       <Button variant="secondary" @click="nextPlayer">Next player</Button>
-      <Button variant="primary">End game</Button>
+      <Button variant="primary" @click="endGame">End game</Button>
     </div>
   </div>
 </template>
@@ -76,6 +76,47 @@ export default {
     },
   },
   methods: {
+    endGame() {
+      // Update player statistics in Vuex store
+      this.$store.commit(
+        "updatePlayerStatistics",
+        this.$store.state.gameData.playerStatistics
+      );
+      this.$router.push({
+          name: "loading-screen",
+          query: { target: "end-game" },
+        });
+    },
+    updatePlayerStatistics(playerName, turnType) {
+      const playerStatsIndex =
+        this.$store.state.gameData.playerStatistics.findIndex(
+          (stats) => stats.playerName === playerName
+        );
+
+      if (playerStatsIndex !== -1) {
+        this.$store.state.gameData.playerStatistics[playerStatsIndex][
+          turnType
+        ]++;
+      } else {
+        const newPlayerStats = {
+          playerName,
+          truths: turnType === "truth" ? 1 : 0,
+          dares: turnType === "dare" ? 1 : 0,
+          drinks: turnType === "drink" ? 1 : 0,
+        };
+
+        this.$store.state.gameData.playerStatistics.push(newPlayerStats);
+      }
+
+      // Make sure the drinks count is updated even if it's not the first turn
+      if (turnType === "drink") {
+        const drinksCount =
+          this.$store.state.gameData.playerStatistics[playerStatsIndex]
+            ?.drinks || 0;
+        this.$store.state.gameData.playerStatistics[playerStatsIndex].drinks =
+          drinksCount + 1;
+      }
+    },
     startCountdown() {
       this.isCounting = setInterval(() => {
         if (this.limitTime === 1) {
@@ -94,6 +135,7 @@ export default {
         this.selectedOption = "truth";
         this.selectQuestion(truthQuestions);
         this.canSelectOption = false;
+        this.updatePlayerStatistics(this.currentPlayerName, "truth");
       }
     },
     selectDare() {
@@ -101,6 +143,7 @@ export default {
         this.selectedOption = "dare";
         this.selectQuestion(dareQuestions);
         this.canSelectOption = false;
+        this.updatePlayerStatistics(this.currentPlayerName, "dare");
       }
     },
     resetLimitTime() {
@@ -136,11 +179,13 @@ export default {
           this.resetLimitTime();
           this.playerDoOrDrink = `<span style="color: salmon;">${this.currentPlayerName}</span> choose to do the challenge !!!`;
           this.isTurnFinished = true;
+          this.updatePlayerStatistics(this.currentPlayerName, "do");
         } else {
           this.selectedAction = "drink";
           this.resetLimitTime();
           this.playerDoOrDrink = `<span style="color: salmon;">${this.currentPlayerName}</span> choose drink !!!`;
           this.isTurnFinished = true;
+          this.updatePlayerStatistics(this.currentPlayerName, "drink");
         }
         this.canSelectAction = false;
       }
@@ -153,6 +198,7 @@ export default {
       this.selectedAction = null;
       this.canSelectAction = true;
       this.isPlayerSelect = false;
+      this.resetLimitTime();
       this.isTurnFinished = false;
       this.playerDoOrDrink = "";
       this.selectedQuestion = null;

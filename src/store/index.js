@@ -9,6 +9,7 @@ const store = createStore({
       questions: [],
       currentQuestionIndex: 0,
       gameStarted: false,
+      playerStatistics: [],
     },
     redirectTarget: "",
   },
@@ -25,6 +26,9 @@ const store = createStore({
     },
     handleRedirectTarget(state, data) {
       state.redirectTarget = data;
+    },
+    updatePlayerStatistics(state, payload) {
+      state.gameData.playerStatistics = payload;
     },
   },
   actions: {
